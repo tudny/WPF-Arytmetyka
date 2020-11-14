@@ -1,6 +1,6 @@
 
 # Sygnatury modułów (TUTAJ WPISUJESZ SWOJE SYGNATURY)
-SIGNATURES='' #'arytmetyka.mli'
+SIGNATURES='arytmetyka.mli'
 
 # Moduły (w tym moduł główny) (TUTAJ WPISUJESZ SWOJE MODULY)
 MODULES='arytmetyka.ml main.ml'
@@ -20,19 +20,17 @@ if test -f "$RUNNABLE"; then
 fi
 
 # Funkcja kompilująca (TEGO RACZEJ NIE DOTYKAJ)
-ocamlopt $SIGNATURES $MODULES -o $RUNNABLE
+ocamlopt $SIGNATURES $MODULES -o $RUNNABLE -w '-8'
+
 
 
 # Sprawdzenie czy kompilacja się powiodła
 if test -f "$RUNNABLE"; then
     echo "Uruchamianie $RUNNABLE"
-    
+
     # Uruchamianie programu
 	./$RUNNABLE
-	
+
 else
 	echo "Compilation failed!"
 fi
-
-
-

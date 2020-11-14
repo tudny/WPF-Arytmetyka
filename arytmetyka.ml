@@ -8,8 +8,14 @@ type wartosc = Przedzial of float * float |
                Dopelnienie of float * float;;
 
 
-let pusty = Przedzial(nan, nan);;
-let pelny = Przedzial(neg_infinity, infinity);;
+let pusty = Przedzial(nan, nan)
+let pelny = Przedzial(neg_infinity, infinity)
+
+let is_nan x = compare x nan = 0
+let is_pusty w =
+  match w with
+  | Przedzial(a, b) -> (is_nan a) || (is_nan b)
+  | Dopelnienie(a, b) -> (a = neg_infinity) && (b = infinity)
 
 (* ****************** *)
 (*    KONSTRUKTORY    *)
@@ -17,14 +23,13 @@ let pelny = Przedzial(neg_infinity, infinity);;
 
 let wartosc_dokladnosc x p =
     let dokladnosc = abs_float (x *. p /. 100.) in
-    Przedzial(x -. dokladnosc, x +. dokladnosc);;
+    Przedzial(x -. dokladnosc, x +. dokladnosc)
 
 let wartosc_od_do x y =
-    Przedzial(x, y);;
+    Przedzial(x, y)
 
 let wartosc_dokladna x =
-    wartosc_dokladnosc x 0.;;
-
+    wartosc_dokladnosc x 0.
 
 (* *************** *)
 (*    SELEKTORY    *)
@@ -38,15 +43,15 @@ let in_wartosc w x =
 let min_wartosc w =
     match w with
     | Przedzial(a, b) -> a
-    | Dopelnienie(_, _) -> neg_infinity;;
+    | Dopelnienie(_, _) -> neg_infinity
 
 let max_wartosc w =
     match w with
     | Przedzial(a, b) -> b
-    | Dopelnienie(_, _) -> infinity;;
+    | Dopelnienie(_, _) -> infinity
 
 let sr_wartosc w =
-    ((min_wartosc w) +. (max_wartosc w)) /. 2.;;
+    ((min_wartosc w) +. (max_wartosc w)) /. 2.
 
 
 (* ****************** *)
@@ -55,7 +60,7 @@ let sr_wartosc w =
 
 let normalize w =
     match w with
-    | Dopelnienie(a, b) when a > b -> pelny
+    | Dopelnienie(a, b) when a >= b -> pelny
     | _ -> w
 
 let min_num x y =
@@ -95,3 +100,7 @@ let przeciwna w =
     | Dopelnienie(a, b) -> Dopelnienie(~-.b, ~-.a);;
 
 let minus x y = plus x (przeciwna y);;
+
+let razy x y = x;;
+
+let podzielic x y = x;;

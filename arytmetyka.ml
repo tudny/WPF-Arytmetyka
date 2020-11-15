@@ -11,12 +11,6 @@ type wartosc = Przedzial of float * float |
 let is_nan x =
   compare x nan = 0
 
-let is_pusty w =
-  match w with
-  | Przedzial (_, _)   -> false
-  | Dopelnienie (_, _) -> false
-  | Pusty             -> true
-
 (* ****************** *)
 (*    KONSTRUKTORY    *)
 (* ****************** *)
@@ -39,23 +33,22 @@ let in_wartosc w x =
   match w with
   | Przedzial (a, b)   -> (a <= x && x <= b)
   | Dopelnienie (a, b) -> (x <= a || b <= x)
-  | Pusty             -> false
+  | Pusty              -> false
 
 let min_wartosc w =
   match w with
-  | Przedzial (a, _) -> a
+  | Przedzial (a, _)   -> a
   | Dopelnienie (_, _) -> neg_infinity
-  | Pusty -> nan
+  | Pusty              -> nan
 
 let max_wartosc w =
   match w with
-  | Przedzial (_, b) -> b
+  | Przedzial (_, b)   -> b
   | Dopelnienie (_, _) -> infinity
-  | Pusty -> nan
+  | Pusty              -> nan
 
 let sr_wartosc w =
   ((min_wartosc w) +. (max_wartosc w)) /. 2.
-
 
 (* ****************** *)
 (*    MODYFIKATORY    *)
@@ -98,11 +91,11 @@ let min_num =
 let max_num =
   num_comp (>);;
 
-let rec extremum_in_list f li =
+let rec extremum_in_list comparator li =
   match li with
   | []  -> nan
   | [x] -> x
-  | h :: t -> f h (extremum_in_list f t);;
+  | h :: t -> comparator h (extremum_in_list comparator t);;
 
 let min_in_list =
   extremum_in_list (min_num)
@@ -118,7 +111,7 @@ let rec plus x y =
   | Dopelnienie (_, _), Dopelnienie (_, _) -> Przedzial (neg_infinity, infinity)
   | Dopelnienie (_, _), Przedzial (_, _) -> plus y x
   | Przedzial (a, b), Dopelnienie (c, d) ->
-    normalize (Dopelnienie (max_num (a +. c) (b +. c), min_num (a +. d) (b +. d)))
+      normalize (Dopelnienie (max_num (a +. c) (b +. c), min_num (a +. d) (b +. d)))
   | _, Pusty -> Pusty
   | Pusty, _ -> Pusty
 
@@ -148,20 +141,6 @@ let czy_zawiera_zero_nie_na_krancu w =
   | Dopelnienie (a, b) -> not (czy_przeciwne_znaki a b)
   | Pusty -> false
 
-let czy_zero_na_krancach w =
-  match w with
-  | Przedzial (a, b) -> (a = 0. || b = 0.)
-  | Dopelnienie (a, b) -> (a = 0. || b = 0.)
-  | Pusty -> false
-
-(* Przekazany przedzial moze byc pełny (Przedzial(-inf, inf)) lub postaci Dopelnienie(a, b) *)
-let merge_przedzialy x y =
-  match x, y with
-  | Przedzial(_, _), _ -> x
-  | _, Przedzial(_, _) -> x
-  | Dopelnienie(a, b), Dopelnienie(c, d) -> Dopelnienie(max_num a c, min_num b d)
-  | _ -> Pusty
-
 let rec razy x y =
   let zero = wartosc_dokladna 0. in
   match x, y with
@@ -169,29 +148,24 @@ let rec razy x y =
   | _, Pusty -> Pusty
   | x, y when x = zero || y = zero -> zero
   | Przedzial (a, b), Przedzial (c, d) ->
-    let kandydaci = (a *. c) :: (a *. d) :: (b *. c) :: (b *. d) :: [] in
-    (* print_list_of_floats kandydaci; print_endline "\n";
-    print_float (max_in_list kandydaci); print_string ", ";
-    print_float (min_in_list kandydaci); print_string "\n"; *)
-    normalize (Przedzial (min_in_list kandydaci, max_in_list kandydaci))
+      let kandydaci = (a *. c) :: (a *. d) :: (b *. c) :: (b *. d) :: [] in
+      normalize (Przedzial (min_in_list kandydaci, max_in_list kandydaci))
   | Przedzial (a, b), Dopelnienie (c, d) ->
-    (* if czy_zawiera_zero_nie_na_krancu x
-    || czy_zawiera_zero_nie_na_krancu y
-    || czy_zero_na_krancach x then
-      normalize( Przedzial (neg_infinity, infinity))
-    else *)
       let w1 = razy x (Przedzial (neg_infinity, c))
       and w2 = razy x (Przedzial (d, infinity)) in
-      (* print_wartosc w1; print_wartosc w2; *)
       let (mini1, maks1) = (min_wartosc w1, max_wartosc w1)
       and (mini2, maks2) = (min_wartosc w2, max_wartosc w2) in
       let (mini, maks) = if maks1 = infinity then (maks2, mini1) else (maks1, mini2) in
       normalize (Dopelnienie (mini, maks))
   | Dopelnienie (_, _), Przedzial (_, _) -> razy y x
   | Dopelnienie (a, b), Dopelnienie (c, d) ->
-    let w1 = razy (normalize (Przedzial(neg_infinity, a))) y
-    and w2 = razy (normalize (Przedzial(b, infinity))) y in
-    merge_przedzialy w1 w2
+      let w1 = razy (normalize (Przedzial (neg_infinity, a))) y
+      and w2 = razy (normalize (Przedzial (b, infinity))) y in
+      match w1, w2 with
+      | Przedzial (_, _), _ -> w1
+      | _, Przedzial (_, _) -> w2
+      | Dopelnienie (a, b), Dopelnienie (c, d) -> normalize (Dopelnienie (max_num a c, min_num b d))
+      | _ -> Pusty
 
 let odwrotnosc w =
   match w with
@@ -209,19 +183,3 @@ let odwrotnosc w =
 
 let podzielic x y =
   razy x (odwrotnosc y);;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(* Mover *)

@@ -1,20 +1,4 @@
 
-open Arytmetyka;;
-
-let is_nan x = compare nan x;;
-
-let zero = wartosc_dokladnosc 5. 20.;;
-let pus = wartosc_od_do 1. 2.;;
-
-let p = plus zero pus;;
-
-print_float (min_wartosc p);;
-print_endline "";;
-print_float (max_wartosc p);;
-
-
-open Arytmetyka;;
-
 let is_nan x = compare x nan = 0;;
 
 let a = wartosc_od_do (-1.) 1.            (* <-1, 1> *)

@@ -22,8 +22,6 @@ fi
 # Funkcja kompilująca (TEGO RACZEJ NIE DOTYKAJ)
 ocamlopt $SIGNATURES $MODULES -o $RUNNABLE -w '-8'
 
-
-
 # Sprawdzenie czy kompilacja się powiodła
 if test -f "$RUNNABLE"; then
     echo "Uruchamianie $RUNNABLE"

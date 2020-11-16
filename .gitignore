@@ -7,5 +7,5 @@ main.cmi
 main.cmx
 main.o
 mateusz.ml
-tests/*
+tests/
 test.ml

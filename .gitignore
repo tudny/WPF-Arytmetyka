@@ -1,3 +1,11 @@
-tests/*
-mateusz.ml
 .gitignore
+Arytmetyka
+arytmetyka.cmi
+arytmetyka.cmx
+arytmetyka.o
+main.cmi
+main.cmx
+main.o
+mateusz.ml
+tests/*
+test.ml

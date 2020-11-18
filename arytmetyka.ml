@@ -1,3 +1,5 @@
+(* Autor Aleksander Tudruj *)
+(* Code review Kacper Jabłoński *)
 
 (* typ 'wartosc' opisana w treści zadania *)
 (* zawiera dwa konstruktory *)
@@ -71,6 +73,7 @@ let print_wartosc w =
 let print_pair_of_floats (a, b) =
   print_string "("; print_float a; print_string ", "; print_float b; print_string ")\n"
 
+(* Funkcja upraszczająca utworzone przedziały, bądź doprowadzająca je do poprawności. Jeżeli nie znajdzie nic do uproszczenia zwraca przekazany przedział *)
 let normalize w =
   match w with
   | Dopelnienie (a, b) when a >= b           -> Przedzial (neg_infinity, infinity)
@@ -80,26 +83,33 @@ let normalize w =
   | Przedzial (a, b)   when a = nan || b = nan               -> Pusty
   | _ -> w
 
+(* Komparator dwóch floatów (x y) za pomocą porównania f (float -> float -> bool) *)
+(* Wartość nan zwracana jest tylko gdy x = nan = y *)
 let num_comp f x y =
   if is_nan x then y else if is_nan y then x else
   if f x y then x
   else y;;
 
+(* Minimum floatów *)
 let min_num =
   num_comp (<);;
 
+(* Maksimum floatów *)
 let max_num =
   num_comp (>);;
 
+(* Element ekstremalny na liście (np min lub max) *)
 let rec extremum_in_list comparator li =
   match li with
   | []  -> nan
   | [x] -> x
   | h :: t -> comparator h (extremum_in_list comparator t);;
 
+(* Minium z listy *)
 let min_in_list =
   extremum_in_list (min_num)
 
+(* Maksimum z listy *)
 let max_in_list =
   extremum_in_list (max_num)
 
@@ -115,6 +125,7 @@ let rec plus x y =
   | _, Pusty -> Pusty
   | Pusty, _ -> Pusty
 
+(* Dla danego zbioru "w" zwraca -w = {-x | x \in w} *)
 let przeciwna w =
   match w with
     | Przedzial (a, b) -> normalize (Przedzial (~-.b, ~-.a))
@@ -123,6 +134,7 @@ let przeciwna w =
 
 let minus x y = plus x (przeciwna y);;
 
+(* Zwraca znak liczby *)
 let znak a =
   match classify_float a with
   | FP_normal -> a /. abs_float(a)
@@ -167,6 +179,7 @@ let rec razy x y =
       | Dopelnienie (a, b), Dopelnienie (c, d) -> normalize (Dopelnienie (max_num a c, min_num b d))
       | _ -> Pusty
 
+(* Dla danego zbioru "w" zwraca w^{-1} = {x^{-1} | x \in w\{0}} *)
 let odwrotnosc w =
   match w with
   | Pusty -> Pusty

@@ -20,7 +20,7 @@ if test -f "$RUNNABLE"; then
 fi
 
 # Funkcja kompilująca (TEGO RACZEJ NIE DOTYKAJ)
-ocamlopt $SIGNATURES $MODULES -o $RUNNABLE -w '-8'
+ocamlopt $SIGNATURES $MODULES -o $RUNNABLE
 
 # Sprawdzenie czy kompilacja się powiodła
 if test -f "$RUNNABLE"; then

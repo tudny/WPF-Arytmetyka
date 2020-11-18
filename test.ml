@@ -90,11 +90,62 @@ assert(not (in_wartosc l (-3.169)));;
 assert(in_wartosc l (-3.168));;
 assert(in_wartosc l 0.0);;
 
-let m = wartosc_dokladnosc (-3.0) (273.3);; (* [-11.199, 5.199]               *)
 
-assert(min_wartosc m = -11.199);;
-assert(max_wartosc m = 5.199);;
-assert(sr_wartosc m = (-3.0));;
-assert(in_wartosc m 0.0);;
+
+
+
+
+
+
+
+
+
+
+
+
+
+let a = in_wartosc ( minus ( wartosc_dokladnosc (-10.000000) (0.000000) ) ( wartosc_od_do (-10.000000) (-2.000000) ) ) (-9.000000);;
+assert (a = false);;
+let a = min_wartosc ( razy ( podzielic ( podzielic ( wartosc_dokladna (2.000000) ) ( razy ( wartosc_dokladnosc (0.000000) (1.000000) ) ( wartosc_dokladna (6.000000) ) ) ) ( minus ( wartosc_od_do (-6.000000) (5.000000) ) ( plus ( wartosc_dokladnosc (0.000000) (9.000000) ) ( wartosc_od_do (-5.000000) (9.000000) ) ) ) ) ( wartosc_od_do (1.000000) (8.000000) ) ) ;;
+assert ((classify_float a) == FP_nan);;
+let a = min_wartosc ( minus ( wartosc_dokladnosc (7.000000) (8.000000) ) ( podzielic ( minus ( wartosc_od_do (0.000000) (0.000000) ) ( plus ( wartosc_od_do (0.000000) (0.000000) ) ( wartosc_dokladna (3.000000) ) ) ) ( wartosc_od_do (-4.000000) (4.000000) ) ) ) ;;
+assert (a = neg_infinity);;
+let a = in_wartosc ( razy ( wartosc_od_do (-4.000000) (0.000000) ) ( razy ( wartosc_dokladna (-8.000000) ) ( wartosc_dokladna (-1.000000) ) ) ) (0.000000);;
+assert (a = true);;
+let a = sr_wartosc ( razy ( wartosc_dokladnosc (4.000000) (0.000000) ) ( wartosc_od_do (-1.000000) (0.000000) ) ) ;;
+assert (a = -2.);;
+let a = max_wartosc ( plus ( wartosc_dokladnosc (-3.000000) (5.000000) ) ( wartosc_od_do (-9.000000) (9.000000) ) ) ;;
+assert (a = 6.15);;
+let a = in_wartosc ( podzielic ( wartosc_dokladna (9.000000) ) ( wartosc_dokladnosc (-5.000000) (9.000000) ) ) (-10.000000);;
+assert (a = false);;
+let a = sr_wartosc ( plus ( minus ( wartosc_dokladnosc (-2.000000) (2.000000) ) ( wartosc_dokladna (6.000000) ) ) ( wartosc_dokladna (3.000000) ) ) ;;
+assert (a = -5.);;
+let a = min_wartosc ( podzielic ( wartosc_dokladnosc (4.000000) (6.000000) ) ( wartosc_dokladnosc (7.000000) (2.000000) ) ) ;;
+assert (a = 0.526610644257703098);;
+let a = in_wartosc ( razy ( wartosc_od_do (0.000000) (0.000000) ) ( wartosc_od_do (4.000000) (4.000000) ) ) (0.000000);;
+assert (a = true);;
+let a = min_wartosc ( podzielic ( wartosc_dokladna (3.000000) ) ( wartosc_od_do (-1.000000) (0.000000) ) ) ;;
+assert (a = neg_infinity);;
+
+let jeden = wartosc_dokladna 1.;;
+
+let a = wartosc_od_do (-1.) 1.;;
+
+let a = podzielic jeden a;;  (* [-∞,-1]•[1,+∞] *)
+
+let b = plus jeden a;;  (* [-∞,0]*[2,+∞] *)
+
+let c = razy a b;; (* [-∞,+∞] *)
+
+assert (min_wartosc c = neg_infinity);;
+
+
+
+
+let n = wartosc_dokladna 9.;;
+let m = wartosc_dokladnosc (-5.) (9.);;
+let m_o = odwrotnosc m;;
+let p = podzielic n m;;
+
 
 print_endline "All tests OK.";;
